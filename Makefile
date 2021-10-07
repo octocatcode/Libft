@@ -3,17 +3,16 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: marvin <marvin@student.42.fr>              +#+  +:+       +#+         #
+#    By: cdorinda <cdorinda@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/10/06 15:36:33 by marvin            #+#    #+#              #
-#    Updated: 2021/10/06 15:36:33 by marvin           ###   ########.fr        #
+#    Updated: 2021/10/07 14:42:07 by cdorinda         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 SRCS = ft_memset.c		\
 		ft_bzero.c		\
 		ft_memcpy.c		\
-		ft_memccpy.c	\
 		ft_memmove.c 	\
 		ft_memchr.c		\
 		ft_memcmp.c		\
@@ -72,12 +71,12 @@ CC_FLAGS = -Wall -Wextra -Werror
 
 $(OBJS_DIR)%.o : %.c libft.h
 	@mkdir -p $(OBJS_DIR)
-	@echo "Compiling: $<"
+	@echo "Compiling.. $<"
 	@clang $(CC_FLAGS) -c $< -o $@
 
 $(NAME): $(OBJECTS_PREFIXED)
 	@ar r $(NAME) $(OBJECTS_PREFIXED)
-	@echo "Libft Done !"
+	@echo "libft.a done!"
 
 all: $(NAME)
 
@@ -91,4 +90,4 @@ re: fclean all
 
 bonus: $(OBJECTS_BONUS_PREFIXED)
 	@ar r $(NAME) $(OBJECTS_BONUS_PREFIXED)
-	@echo "Libft Bonus Done !"
+	@echo "libft.a bonus done!"
