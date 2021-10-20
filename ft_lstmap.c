@@ -6,35 +6,38 @@
 /*   By: cdorinda <cdorinda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/07 14:40:29 by cdorinda          #+#    #+#             */
-/*   Updated: 2021/10/07 14:41:07 by cdorinda         ###   ########.fr       */
+/*   Updated: 2021/10/20 17:53:42 by cdorinda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdlib.h>
 #include "libft.h"
 
 t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *))
 {
-	t_list	*new_list;
-	t_list	*save;
+	t_list	*new_lst;
+	t_list	*new_elem;
 
-	if (!lst || !f || !del)
-		return (0);
-	new_list = ft_lstnew(f(lst->content));
-	if (!new_list)
-		return (0);
-	save = new_list;
+	if (!lst || !f)
+		return (NULL);
+	new_elem = ft_lstnew(f(lst->content));
+	if (!(new_elem))
+	{
+		ft_lstclear(&lst, del);
+		return (NULL);
+	}
+	new_lst = new_elem;
 	lst = lst->next;
 	while (lst)
 	{
-		new_list->next = ft_lstnew(f(lst->content));
-		if (!new_list->next)
+		new_elem = ft_lstnew(f(lst->content));
+		if (!(new_elem))
 		{
-			ft_lstclear(&save, del);
-			return (0);
+			ft_lstclear(&lst, del);
+			ft_lstclear(&new_lst, del);
 		}
-		new_list = new_list->next;
 		lst = lst->next;
+		ft_lstadd_back(&new_lst, new_elem);
 	}
-	new_list->next = NULL;
-	return (save);
+	return (new_lst);
 }

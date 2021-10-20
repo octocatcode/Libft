@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ft_itoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: cdorinda <cdorinda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/06 16:13:00 by marvin            #+#    #+#             */
-/*   Updated: 2021/10/06 16:13:00 by marvin           ###   ########.fr       */
+/*   Updated: 2021/10/20 17:13:47 by cdorinda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int		ft_estim(long n)
+static int	ft_estim(long n)
 {
 	size_t	estim;
 	int		isneg;
@@ -33,7 +33,7 @@ static int		ft_estim(long n)
 	return (estim);
 }
 
-static char		*ft_gen(char *rtn, long nbr, int len, int isneg)
+static char	*ft_gen(char *rtn, long nbr, int len, int isneg)
 {
 	if (nbr != 0)
 		rtn = malloc(sizeof(char) * (len + 1));
@@ -60,7 +60,7 @@ static char		*ft_gen(char *rtn, long nbr, int len, int isneg)
 	return (rtn);
 }
 
-char			*ft_itoa(int n)
+char	*ft_itoa(int n)
 {
 	int		len;
 	char	*rtn;
@@ -71,7 +71,8 @@ char			*ft_itoa(int n)
 	len = ft_estim(nbr);
 	rtn = 0;
 	isneg = 0;
-	if (!(rtn = ft_gen(rtn, nbr, len, isneg)))
+	rtn = ft_gen(rtn, nbr, len, isneg);
+	if (!(rtn))
 		return (0);
 	return (rtn);
 }

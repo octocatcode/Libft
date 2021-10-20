@@ -3,117 +3,95 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: cdorinda <cdorinda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/06 16:12:15 by marvin            #+#    #+#             */
-/*   Updated: 2021/10/06 16:12:15 by marvin           ###   ########.fr       */
+/*   Updated: 2021/10/20 17:02:06 by cdorinda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int		ft_hm(char const *s, char c)
+static int	count_words(char const *s, char c)
 {
-	size_t	nbr;
 	int		i;
+	int		words;
 
-	nbr = 0;
+	words = 0;
 	i = 0;
 	while (s[i])
 	{
-		while (s[i] == c)
-			i++;
-		if (i > 0 && s[i] && s[i - 1] == c)
-			nbr++;
-		if (s[i])
-			i++;
+		if (s[i] != c && (s[i + 1] == c || s[i + 1] == '\0'))
+			words++;
+		i++;
 	}
-	if (nbr == 0 && s[i - 1] == c)
-		return (0);
-	if (s[0] != c)
-		nbr++;
-	return (nbr);
+	return (words);
 }
 
-static char		**ft_mal(char **strs, char const *s, char c)
+static int	words_len(char const *s, char c)
 {
-	size_t	count;
 	int		i;
-	int		h;
-
-	count = 0;
-	i = 0;
-	h = 0;
-	while (s[h])
-	{
-		if (s[h] != c)
-			count++;
-		else if (h > 0 && s[h - 1] != c)
-		{
-			strs[i] = malloc(sizeof(char) * (count + 1));
-			if (!strs[i])
-				return (0);
-			count = 0;
-			i++;
-		}
-		if (s[h + 1] == '\0' && s[h] != c)
-			if (!(strs[i] = malloc(sizeof(char) * count + 1)))
-				return (0);
-		h++;
-	}
-	return (strs);
-}
-
-static char		**ft_cpy(char **strs, char const *s, char c)
-{
-	int i;
-	int j;
-	int h;
+	int		len;
 
 	i = 0;
-	j = 0;
-	h = 0;
-	while (s[h])
+	len = 0;
+	while (s[i] != c && s[i] != '\0')
 	{
-		if (s[h] != c)
-			strs[i][j++] = s[h];
-		else if (h > 0 && s[h - 1] != c)
-			if (h != 0)
-			{
-				strs[i][j] = '\0';
-				j = 0;
-				i++;
-			}
-		if (s[h + 1] == '\0' && s[h] != c)
-			strs[i][j] = '\0';
-		h++;
+		i++;
+		len++;
 	}
-	return (strs);
+	return (len);
 }
 
-char			**ft_split(char const *s, char c)
+static void	*leak(char **splitted, int words)
 {
-	char	**rtn;
-	int		nbr_w;
+	int	i;
 
-	if (!s || !*s)
+	i = 0;
+	while (i < words)
 	{
-		if (!(rtn = malloc(sizeof(char *) * 1)))
-			return (NULL);
-		*rtn = (void *)0;
-		return (rtn);
+		free(splitted[i]);
+		i++;
 	}
-	nbr_w = ft_hm(s, c);
-	rtn = malloc(sizeof(char *) * (nbr_w + 1));
-	if (!rtn)
-		return (0);
-	if (ft_mal(rtn, s, c) != 0)
-		ft_cpy(rtn, s, c);
-	else
+	free(splitted);
+	return (NULL);
+}
+
+static char	**fill(char const *s, int words, char c, char **splitted)
+{
+	int		i;
+	int		j;
+	int		len;
+
+	i = -1;
+	while (++i < words)
 	{
-		free(rtn);
+		while (*s == c)
+			s++;
+		len = words_len(s, c);
+		splitted[i] = (char *)malloc(sizeof(char) * (len + 1));
+		if (!splitted[i])
+			return (leak(splitted, i));
+		j = 0;
+		while (j < len)
+			splitted[i][j++] = *s++;
+		splitted[i][j] = '\0';
+	}
+	splitted[i] = NULL;
+	return (splitted);
+}
+
+char	**ft_split(char	const *s, char c)
+{
+	char	**splitted;
+	int		words;
+
+	if (!s)
 		return (NULL);
-	}
-	rtn[nbr_w] = (void *)0;
-	return (rtn);
+	words = count_words(s, c);
+	splitted = (char **)malloc(sizeof(char *) * (words + 1));
+	if (!splitted)
+		return (NULL);
+	splitted = fill(s, words, c, splitted);
+	return (splitted);
 }
